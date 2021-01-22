@@ -16,7 +16,41 @@
 
 
 window.findNRooksSolution = function(n) {
-  var solution = undefined; //fixme
+  let curSolution = [];
+  // set up major diagonal solution
+  for (let i = 0; i < n; i++) {
+    let row = new Array(n).fill(0);
+    row[i] = 1;
+    curSolution.push(row);
+  }
+
+  let allSolutions = [];
+  var rotateBoard = function(board, prevRows) {
+    console.log(board);
+    if (board.length === 1) {
+      allSolutions.push(prevRows.concat(board));
+    } else {
+      for (let i = 0; i < n; i++) {
+        if (prevRows) {
+          let newBoard = prevRows.concat(board);
+          allSolutions.push(newBoard);
+        } else {
+          allSolutions.push(board);
+          prevRows = [];
+        }
+
+        let row = board.pop();
+        board.unshift(row);
+        prevRows.push(row);
+        rotateBoard(board.slice(1), prevRows);
+      }
+    }
+  };
+  rotateBoard(curSolution);
+
+  var randBoard = allSolutions[Math.floor(Math.random() * allSolutions.length)];
+
+  var solution = new Board(randBoard);
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
