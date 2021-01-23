@@ -25,32 +25,64 @@ window.findNRooksSolution = function(n) {
   }
 
   let allSolutions = [];
-  var rotateBoard = function(board, prevRows) {
-    console.log(board);
-    if (board.length === 1) {
-      allSolutions.push(prevRows.concat(board));
+  var rotateBoard = function(board, prevRows = []) {
+    // console.log(board);
+    // console.log(prevRows);
+    // if (board.length === 1) {
+    //   allSolutions.push(prevRows.concat(board));
+    // } else {
+    //   for (let i = 0; i < n; i++) {
+    //     if (prevRows.length > 0) {
+    //       let newBoard = prevRows.concat(board);
+    //       allSolutions.push(newBoard);
+    //     } else {
+    //       let tempBoard = board.slice();
+    //       allSolutions.push(tempBoard);
+    //       // prevRows = [];
+    //     }
+
+    //     let row = board.pop();
+    //     board.unshift(row);
+    //     // prevRows.push(row);
+    //     let a = prevRows.slice();
+    //     a.push(row);
+    //     rotateBoard(board.slice(1), a);
+    //   }
+    // }
+    let newBoard;
+    if (board.length === 2) {
+      let row = board.pop();
+      board.unshift(row);
+      newBoard = prevRows.concat(board);
+      allSolutions.push(newBoard);
     } else {
-      for (let i = 0; i < n; i++) {
-        if (prevRows) {
-          let newBoard = prevRows.concat(board);
-          allSolutions.push(newBoard);
-        } else {
-          allSolutions.push(board);
-          prevRows = [];
-        }
+      // console.log(newBoard);
+      // allSolutions.push(prevRows.concat(newBoard));
+      const remainder = prevRows.length === 0 ? [] : prevRows;
+      // remainder.push(board[0]);
+      for (var i = 0; i < board.length; i++) {
+        newBoard = board.slice();
+        let curRemainder = remainder.slice();
+        curRemainder.push(board[0]);
+
+        rotateBoard(newBoard.slice(1), curRemainder);
 
         let row = board.pop();
         board.unshift(row);
-        prevRows.push(row);
-        rotateBoard(board.slice(1), prevRows);
+
+        newBoard = prevRows.concat(board);
+        allSolutions.push(newBoard);
       }
     }
+
   };
-  rotateBoard(curSolution);
+  if (n > 1) {
+    rotateBoard(curSolution);
+  } else {
+    allSolutions.push(curSolution);
+  }
 
-  var randBoard = allSolutions[Math.floor(Math.random() * allSolutions.length)];
-
-  var solution = new Board(randBoard);
+  var solution = allSolutions[Math.floor(Math.random() * allSolutions.length)];
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
