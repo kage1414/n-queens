@@ -104,19 +104,24 @@ window.findNRooksSolution = function(n) {
   var nestedFor = function(board, row) {
     if (row === n) {
       if (board.hasAnyRookConflicts() === false) {
-        return board.rows();
+        solution = board.rows();
       }
     } else {
       for (let i = 0; i < n; i++) {
         board.togglePiece(row, i);
         nestedFor(startBoard, row + 1);
-        board.togglePiece(row, i);
+        if (solution === undefined) {
+          board.togglePiece(row, i);
+        } else {
+          return;
+        }
       }
     }
   };
 
   let startBoard = new Board({'n': n});
-  let solution = nestedFor(startBoard, 0);
+  let solution;
+  nestedFor(startBoard, 0);
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
@@ -151,19 +156,24 @@ window.findNQueensSolution = function(n) {
   var nestedFor = function(board, row) {
     if (row === n) {
       if (board.hasAnyRookConflicts() === false && board.hasAnyQueensConflicts() === false) {
-        return board.rows();
+        solution = board.rows();
       }
     } else {
       for (let i = 0; i < n; i++) {
         board.togglePiece(row, i);
         nestedFor(startBoard, row + 1);
-        board.togglePiece(row, i);
+        if (solution === undefined) {
+          board.togglePiece(row, i);
+        } else {
+          return;
+        }
       }
     }
   };
 
   let startBoard = new Board({'n': n});
-  let solution = nestedFor(startBoard, 0);
+  let solution;
+  nestedFor(startBoard, 0);
 
   if (solution === undefined) {
     return {'n': n};
